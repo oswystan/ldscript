@@ -18,18 +18,18 @@ typedef struct _initcall_t {
 } initcall_t;
 
 #define __section(s) __attribute__((__section__(#s)))
+#define __align(n) __attribute__((aligned(n)))
+#define __used __attribute__((__used__))
+#define __define_initcall(c, d, n) \
+    static initcall_t __init_call_##n##_##c##_##d               \
+        __used __align(4) __section(._local_init.##n) = {       \
+            .init = c,                                          \
+            .exit = d,                                          \
+        }
 
-#define CORE_INIT(c, d) __section(._local_init.1) \
-    static initcall_t __init_call_1_##c##_##d = {\
-        .init = c,\
-        .exit = d,\
-    }
+#define CORE_INIT(c, d)   __define_initcall(c, d, 1)
+#define MODULE_INIT(c, d) __define_initcall(c, d, 2)
 
-#define MODULE_INIT(c, d) __section(._local_init.2) \
-    static initcall_t __init_call_2_##c##_##d = {\
-        .init = c,\
-        .exit = d,\
-    }
 extern char g_initcall_start[];
 extern char g_initcall_end[];
 
@@ -52,6 +52,7 @@ int sys_init() {
 void sys_exit() {
     printf("enter %s\n", __func__);
 }
+
 MODULE_INIT(module_init, module_exit);
 MODULE_INIT(sys_init, sys_exit);
 CORE_INIT(core_init, core_exit);
