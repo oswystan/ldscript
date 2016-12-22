@@ -29,35 +29,35 @@ typedef struct _initcall_t {
             .exit = d,                                          \
         }
 
-#define CORE_INIT(c, d)   __define_initcall(c, d, 1)
-#define MODULE_INIT(c, d) __define_initcall(c, d, 2)
+#define core_init(c, d)   __define_initcall(c, d, 1)
+#define module_init(c, d) __define_initcall(c, d, 2)
 
 extern char g_initcall_start[];
 extern char g_initcall_end[];
 
-int core_init() {
+int fn_core_init() {
     printf("enter %s\n", __func__);
 }
-void core_exit() {
+void fn_core_exit() {
     printf("enter %s\n", __func__);
 }
-int module_init() {
+int fn_module_init() {
     printf("enter %s\n", __func__);
 }
-void module_exit() {
-    printf("enter %s\n", __func__);
-}
-
-int sys_init() {
-    printf("enter %s\n", __func__);
-}
-void sys_exit() {
+void fn_module_exit() {
     printf("enter %s\n", __func__);
 }
 
-MODULE_INIT(module_init, module_exit);
-MODULE_INIT(sys_init, sys_exit);
-CORE_INIT(core_init, core_exit);
+int fn_sys_init() {
+    printf("enter %s\n", __func__);
+}
+void fn_sys_exit() {
+    printf("enter %s\n", __func__);
+}
+
+module_init(fn_module_init, fn_module_exit);
+module_init(fn_sys_init, fn_sys_exit);
+core_init(fn_core_init, fn_core_exit);
 
 void __ctors my_init() {
     initcall_t* ic = (initcall_t*)g_initcall_start;                    
