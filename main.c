@@ -17,9 +17,11 @@ typedef struct _initcall_t {
     void (*exit)();
 } initcall_t;
 
-#define __section(s) __attribute__((__section__(#s)))
-#define __align(n) __attribute__((aligned(n)))
-#define __used __attribute__((__used__))
+#define __ctors         __attribute__((constructor))
+#define __dtors         __attribute__((destructor))
+#define __section(s)    __attribute__((__section__(#s)))
+#define __align(n)      __attribute__((aligned(n)))
+#define __used          __attribute__((__used__))
 #define __define_initcall(c, d, n) \
     static initcall_t __init_call_##n##_##c##_##d               \
         __used __align(4) __section(._local_init.##n) = {       \
@@ -57,7 +59,7 @@ MODULE_INIT(module_init, module_exit);
 MODULE_INIT(sys_init, sys_exit);
 CORE_INIT(core_init, core_exit);
 
-void __attribute((constructor)) my_init() {
+void __ctors my_init() {
     initcall_t* ic = (initcall_t*)g_initcall_start;                    
     int cnt = (g_initcall_end - g_initcall_start) / sizeof(initcall_t);
     int i = 0;                                                         
@@ -66,7 +68,7 @@ void __attribute((constructor)) my_init() {
     }                                                                  
     printf("before main\n");
 }
-void __attribute((destructor)) my_exit() {
+void __dtors my_exit() {
     initcall_t* ic = (initcall_t*)g_initcall_start;                    
     int cnt = (g_initcall_end - g_initcall_start) / sizeof(initcall_t);
     int i = 0;                                                         
