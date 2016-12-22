@@ -22,6 +22,7 @@ typedef struct _initcall_t {
 #define __section(s)    __attribute__((__section__(#s)))
 #define __align(n)      __attribute__((aligned(n)))
 #define __used          __attribute__((__used__))
+#define __packed        __attribute__((packed))
 #define __define_initcall(c, d, n) \
     static initcall_t __init_call_##n##_##c##_##d               \
         __used __align(4) __section(._local_init.##n) = {       \
