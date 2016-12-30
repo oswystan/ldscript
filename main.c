@@ -60,7 +60,7 @@ module_init(fn_module_init, fn_module_exit);
 module_init(fn_sys_init, fn_sys_exit);
 core_init(fn_core_init, fn_core_exit);
 
-void __ctors my_init() {
+static void __ctors _local_init_() {
     initcall_t* ic = (initcall_t*)g_initcall_start;                    
     int cnt = (g_initcall_end - g_initcall_start) / sizeof(initcall_t);
     int i = 0;                                                         
@@ -69,7 +69,7 @@ void __ctors my_init() {
     }                                                                  
     printf("before main\n");
 }
-void __dtors my_exit() {
+static __dtors _local_exit_() {
     initcall_t* ic = (initcall_t*)g_initcall_start;                    
     int cnt = (g_initcall_end - g_initcall_start) / sizeof(initcall_t);
     int i = 0;                                                         
